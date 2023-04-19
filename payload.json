@@ -1,20 +1,15 @@
 {
-    "enable_hr": "false",
-    "prompt": "A painting in the style of Monet",
-    "seed": 3456789904,
-    "sampler_name": "Euler a",
-    "batch_size": 1,
-    "steps": 15,
-    "cfg_scale": 7,
-    "width": 512,
-    "height": 512,
+    "prompt": "shark",
     "negative_prompt": "",
-    "controlnet_units": [
-        {
-            "weight": 1.0,
-            "module": "none",
-            "model": "control_sd15_scribble [fef5e48e]",
-            "guessmode": "false"
-        }
-    ]
+    "init_images": [
+        "stub-image"
+    ],
+    "height": 512,
+    "width": 512,
+    "steps": 50,
+    "denoising_strength": 0.8,
+    "cfg_scale": 7.5,
+    "seed": 1234,
+    "hf_model_id": "runwayml/stable-diffusion-v1-5",
+    "use_stencil": "scribble"
 }
