@@ -14,7 +14,7 @@ from tkinter import filedialog
 pygame.init()
 
 # setup sd inputs
-url = "http://127.0.0.1:7860"
+url = "http://localhost:8080"
 prompt = "A painting by Monet"
 seed = 3456456767
 
@@ -104,11 +104,11 @@ while running:
                     data = base64.b64encode(data.getvalue()).decode('utf-8')
                     with open("payload.json", "r") as f:
                         payload = json.load(f)
-                    payload['controlnet_units'][0]['input_image'] = data
+                    payload['init_images'][0] = data
                     
                     def send_request():
                         global server_busy
-                        response = requests.post(url=f'{url}/controlnet/txt2img', json=payload)
+                        response = requests.post(url=f'{url}/sdapi/v1/img2img', json=payload)
                         r = response.json()
                         return_img = r['images'][0]
                         update_image(return_img)
