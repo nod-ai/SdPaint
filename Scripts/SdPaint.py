@@ -38,7 +38,7 @@ prompt = ""
 prompt_rect = pygame.Rect(0, 0, 924, 50)
 prompt_rec_color = colour_passive
 prompt_rect_active = False
-default_prompt = "Enter your prompt here and then go back to scribbling in the canvas on right (default is 'shark')"
+default_prompt = "Enter your prompt here and then go back to scribbling in the canvas on left (default is 'shark')"
 prompt_box_text = default_prompt
 
 # STEPS BOX
@@ -80,7 +80,7 @@ def update_image(image_data):
     # Decode base64 image data
     img_bytes = io.BytesIO(base64.b64decode(image_data))
     img_surface = pygame.image.load(img_bytes)
-    canvas.blit(img_surface, (0, 50))
+    canvas.blit(img_surface, (512, 50))
 
 def update_payload():
     with open("payload.json", "r") as f:
@@ -123,7 +123,7 @@ while running:
                     steps += event.unicode
                 invalid_step = is_invalid_step()
             elif event.key == pygame.K_BACKSPACE:
-                pygame.draw.rect(canvas, (255, 255, 255), (512, 50, 512, 512))
+                pygame.draw.rect(canvas, (255, 255, 255), (0, 50, 512, 512))
             elif event.key == pygame.K_s:
                 save_file_dialog()
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -161,7 +161,7 @@ while running:
                 # Check if server is busy before sending request
                 if not server_busy:
                     server_busy = True
-                    img = canvas.subsurface(pygame.Rect(512, 0, 512, 512)).copy()
+                    img = canvas.subsurface(pygame.Rect(0, 50, 512, 512)).copy()
 
                     # Convert the Pygame surface to a PIL image
                     pil_img = Image.frombytes('RGB', img.get_size(), pygame.image.tostring(img, 'RGB'))
