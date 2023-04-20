@@ -20,14 +20,36 @@ seed = 3456456767
 
 # Set up the display
 screen = pygame.display.set_mode((1024, 512))
-pygame.display.set_caption("Sd Paint")
-
+pygame.display.set_caption("Sd Paint with SHARK")
 # Setup text
 font = pygame.font.SysFont(None, 24)
-text_input = ""
 # Set up the drawing surface
-canvas = pygame.Surface((1024, 512))
-pygame.draw.rect(canvas, (255, 255, 255), (0, 0, 1024, 512))
+canvas = pygame.Surface((1024, 562))
+pygame.draw.rect(canvas, (255, 255, 255), (0, 50, 1024, 512))
+
+
+colour_active = pygame.Color('lightskyblue3')
+colour_passive = pygame.Color('gray15')
+colour_wrong = pygame.Color('red')
+colour_default_text = pygame.Color('cornsilk3')
+
+# PROMPT BOX
+prompt = ""
+prompt_rect = pygame.Rect(0, 0, 924, 50)
+prompt_rec_color = colour_passive
+prompt_rect_active = False
+default_prompt = "Enter your prompt here and then go back to scribbling in the canvas on right (default is 'shark')"
+prompt_box_text = default_prompt
+
+# STEPS BOX
+steps = "20"
+steps_rect = pygame.Rect(924, 0, 100, 50)
+steps_rec_color = colour_passive
+steps_rect_active = False
+invalid_step = False
+
+# VERTICAL LINE
+line_color = (0, 0, 0)
 
 # Set up the brush
 brush_size = {1: 2, 2: 10}
@@ -58,7 +80,27 @@ def update_image(image_data):
     # Decode base64 image data
     img_bytes = io.BytesIO(base64.b64decode(image_data))
     img_surface = pygame.image.load(img_bytes)
-    canvas.blit(img_surface, (0, 0))
+    canvas.blit(img_surface, (0, 50))
+
+def update_payload():
+    with open("payload.json", "r") as f:
+        payload = json.load(f)
+    if prompt != "":
+        payload["prompt"] = prompt
+    else:
+        payload["prompt"] = "shark"
+    payload["steps"] = int(steps)
+    with open("payload.json", "w") as f:
+        json.dump(payload, f, indent=4)
+
+def is_invalid_step():
+    if not steps.isnumeric():
+        return True
+    if steps == "":
+        return True
+    int_steps = int(steps)
+    if int_steps not in range(1,150):
+        return True
 
 # Set up the main loop
 running = True
@@ -69,19 +111,51 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_BACKSPACE:
-                pygame.draw.rect(canvas, (255, 255, 255), (512, 0, 512, 512))
+            if prompt_rect_active:
+                if event.key == pygame.K_BACKSPACE:
+                    prompt = prompt[:-1]
+                else:
+                    prompt += event.unicode
+            elif steps_rect_active:
+                if event.key == pygame.K_BACKSPACE:
+                    steps = steps[:-1]
+                elif len(steps) < 3:
+                    steps += event.unicode
+                invalid_step = is_invalid_step()
+            elif event.key == pygame.K_BACKSPACE:
+                pygame.draw.rect(canvas, (255, 255, 255), (512, 50, 512, 512))
             elif event.key == pygame.K_s:
                 save_file_dialog()
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button in brush_colors:
+            if prompt_rect.collidepoint(event.pos):
+                prompt_rect_active = True
+                steps_rect_active = False
+            elif steps_rect.collidepoint(event.pos):
+                steps_rect_active = True
+                prompt_rect_active = False
+            elif event.button in brush_colors:
                 brush_pos[event.button] = event.pos
+                prompt_rect_active = False
+                steps_rect_active = False
             elif event.button == 4:  # scroll up
                 brush_size[1] = max(1, brush_size[1] + 1)
+                prompt_rect_active = False
+                steps_rect_active = False
             elif event.button == 5:  # scroll down
                 brush_size[1] = max(1, brush_size[1] - 1)
+                prompt_rect_active = False
+                steps_rect_active = False
         elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button in brush_colors:
+            if prompt_rect.collidepoint(event.pos):
+                prompt_rect_active = True
+                steps_rect_active = False
+            elif steps_rect.collidepoint(event.pos):
+                steps_rect_active = True
+                prompt_rect_active = False
+            elif event.button in brush_colors:
+                prompt_rect_active = False
+                steps_rect_active = False
+                update_payload()
                 brush_pos[event.button] = None
                 brush_color = brush_colors[event.button]
                 # Check if server is busy before sending request
@@ -122,6 +196,24 @@ while running:
                     pygame.draw.circle(canvas, brush_colors[button], event.pos, brush_size[button])
     
     # Draw the canvas and brushes on the screen
+    if prompt_rect_active:
+        prompt_rec_color = colour_active
+    else:
+        prompt_rec_color = colour_passive
+    if steps_rect_active:
+        steps_rec_color = colour_active
+        if invalid_step:
+            steps_rec_color = colour_wrong
+    else:
+        steps_rec_color = colour_passive
+    pygame.draw.rect(canvas, prompt_rec_color, prompt_rect, 5)
+    prompt_text_surface = ""
+    if prompt == "" and not prompt_rect_active:
+        prompt_text_surface = font.render(default_prompt, True, colour_default_text)
+    else:
+        prompt_text_surface = font.render(prompt, True, (255, 255, 255))
+    pygame.draw.rect(canvas, steps_rec_color, steps_rect, 5)
+    steps_text_surface = font.render(steps, True, (255, 255, 255))
     screen.blit(canvas, (0, 0))
     
     # Create a new surface with a circle
@@ -133,6 +225,9 @@ while running:
     mouse_pos = pygame.mouse.get_pos()
     screen.blit(cursor_surface, (mouse_pos[0] - cursor_size // 2, mouse_pos[1] - cursor_size // 2))
         
+    pygame.draw.line(canvas, line_color, (512, 50), (512, 562))
+    screen.blit(prompt_text_surface, (prompt_rect.x + 10, prompt_rect.y + 20))
+    screen.blit(steps_text_surface, (steps_rect.center[0] - 7, steps_rect.center[1] - 5))
     for button, pos in brush_pos.items():
         if pos is not None and button in brush_colors:
             pygame.draw.circle(screen, brush_colors[button], pos, brush_size[button])
