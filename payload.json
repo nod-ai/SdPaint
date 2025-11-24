@@ -1,5 +1,5 @@
 {
-    "prompt": "shark",
+    "prompt": "amdshark",
     "negative_prompt": "",
     "init_images": [
         "stub-image"

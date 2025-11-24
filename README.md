@@ -1,4 +1,4 @@
-# SdPaint with SHARK
+# SdPaint with AMD-SHARK
 A simple python script that lets you paint on a canvas and sends that image every stroke to the automatic1111 API and updates the canvas when the image is generated
 
 ## Updates
@@ -8,14 +8,14 @@ A simple python script that lets you paint on a canvas and sends that image ever
 
 ## Installation and Usage
 
-* First download the latest SHARK SD webui .exe from [here](https://github.com/nod-ai/SHARK/releases) or follow instructions on the [README](https://github.com/nod-ai/SHARK#readme)
-* Once you have the .exe where you would like SHARK to install, run the .exe from terminal/PowerShell with the `--api` flag:
+* First download the latest AMD-SHARK SD webui .exe from [here](https://github.com/nod-ai/SHARK/releases) or follow instructions on the [README](https://github.com/nod-ai/SHARK#readme)
+* Once you have the .exe where you would like AMD-SHARK to install, run the .exe from terminal/PowerShell with the `--api` flag:
 ```
 ## Run the .exe in API mode:
-.\shark_sd_<date>_<ver>.exe --api
+.\amdshark_sd_<date>_<ver>.exe --api
 ## For example:
-.\shark_sd_20230411_671.exe --api
-## From a the base directory of a source clone of SHARK:
+.\amdshark_sd_20230411_671.exe --api
+## From a the base directory of a source clone of AMD-SHARK:
 ./setup_venv.ps1
 python apps\stable_diffusion\web\index.py --api
 ```
@@ -25,13 +25,13 @@ Your local SD server should start and look something like this:
 
 * Note: When running in api mode with `--api`, the .exe will not function as a webUI. Thus, the address in the terminal output will only be useful for API requests.
 
-* If you are modifying `server_port` via SHARK's sd webui, then ensure you modify the port in `Scripts/SdPaint.py` as well.
+* If you are modifying `server_port` via AMD-SHARK's sd webui, then ensure you modify the port in `Scripts/SdPaint.py` as well.
 
 * Now run `Start.sh` after setting the permission using `chmod` command. Or run `Start.bat` for Windows.
 
 left mouse to draw and middlemouse to erase
 press backspace to erase the image.
-Enter prompt (default `shark`) in the toolbar above as well as change `steps` (default `20`).
+Enter prompt (default `amdshark`) in the toolbar above as well as change `steps` (default `20`).
 the program is bound to 512x512 images right now and doesn't have the ability to save the image right now.
 I may add more features at a later time.
 
