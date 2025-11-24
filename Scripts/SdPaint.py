@@ -38,7 +38,7 @@ prompt = ""
 prompt_rect = pygame.Rect(0, 0, 924, 50)
 prompt_rec_color = colour_passive
 prompt_rect_active = False
-default_prompt = "Enter your prompt here and then go back to scribbling in the canvas on left (default is 'shark')"
+default_prompt = "Enter your prompt here and then go back to scribbling in the canvas on left (default is 'amdshark')"
 prompt_box_text = default_prompt
 
 # STEPS BOX
@@ -88,7 +88,7 @@ def update_payload():
     if prompt != "":
         payload["prompt"] = prompt
     else:
-        payload["prompt"] = "shark"
+        payload["prompt"] = "amdshark"
     payload["steps"] = int(steps)
     with open("payload.json", "w") as f:
         json.dump(payload, f, indent=4)
