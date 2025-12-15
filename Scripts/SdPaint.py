@@ -20,7 +20,7 @@ seed = 3456456767
 
 # Set up the display
 screen = pygame.display.set_mode((1024, 512))
-pygame.display.set_caption("Sd Paint with SHARK")
+pygame.display.set_caption("Sd Paint with AMD-SHARK-Studio")
 # Setup text
 font = pygame.font.SysFont(None, 24)
 # Set up the drawing surface

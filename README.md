@@ -8,7 +8,7 @@ A simple python script that lets you paint on a canvas and sends that image ever
 
 ## Installation and Usage
 
-* First download the latest AMD-SHARK SD webui .exe from [here](https://github.com/nod-ai/SHARK/releases) or follow instructions on the [README](https://github.com/nod-ai/SHARK#readme)
+* First download the latest AMD-SHARK SD webui .exe from [here](https://github.com/nod-ai/AMD-SHARK-Studio/releases) or follow instructions on the [README](https://github.com/nod-ai/AMD-SHARK-Studio#readme)
 * Once you have the .exe where you would like AMD-SHARK to install, run the .exe from terminal/PowerShell with the `--api` flag:
 ```
 ## Run the .exe in API mode:
